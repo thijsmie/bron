@@ -1,7 +1,5 @@
-# tomly
+# bron
 
 ## Commands
 
-### `tomly format`
-
-### `tomly sync`
+### `bron`

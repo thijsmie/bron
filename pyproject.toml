@@ -1,17 +1,39 @@
 [project]
-name = "tomly"
+name = "bron"
 version = "0.1.0"
 description = "Operational TOML"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
+    "httpx>=0.28.1",
     "packaging>=24.2",
-    "pytoml11>=0.0.2",
-    "typer>=0.15.1",
+    "pytoml11>=1.21.0",
 ]
 
 [project.scripts]
-tomly = "tomly:app"
+bron = "bron:app"
+
+[dependency-groups]
+dev = [
+    "ruff>=0.9.1",
+]
 
 [tool.uv]
 package = true
+
+[tool.uv.sources]
+pytoml11 = {path = "../pytoml11"}
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["A", "C", "E", "F", "UP", "RUF", "I", "PL", "PTH", "TID252", "SIM"]
+ignore = ["E402", "PLR2004", "PLR0913", "RUF001"]
+fixable = ["C", "E", "F", "UP", "I", "PL", "RUF", "PTH", "PLC", "TID252", "SIM"]
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+[tool.ruff.lint.mccabe]
+max-complexity = 10
+
