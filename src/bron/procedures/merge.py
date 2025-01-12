@@ -13,7 +13,7 @@ def item_is_nosync(item: Item) -> bool:
 @overload
 def _merge_regular(base: Table, update: Table, path: tuple[str, ...]) -> None: ...
 @overload
-def _merge_regular(base: Array, update: Array, path: tuple[str, ...]) -> None: ... # type: ignore
+def _merge_regular(base: Array, update: Array, path: tuple[str, ...]) -> None: ...  # type: ignore
 
 
 def _merge_regular(base: Table | Array, update: Table | Array, path: tuple[str, ...]) -> None:
@@ -42,8 +42,9 @@ def _merge_regular(base: Table | Array, update: Table | Array, path: tuple[str, 
             dedup_set.add(item.value)
 
     for item in update.value:
-        if isinstance(item.value, str | int | bool | float) and item.value not in dedup_set:
-            base.append(item.copy())
+        if isinstance(item.value, str | int | bool | float):
+            if item.value not in dedup_set:
+                base.append(item.copy())
         else:
             base.append(item.copy())
 

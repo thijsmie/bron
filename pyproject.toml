@@ -27,9 +27,9 @@ line-length = 120
 target-version = "py312"
 
 [tool.ruff.lint]
-select = ["A", "C", "E", "F", "UP", "RUF", "I", "PL", "PTH", "TID252", "SIM", "A", "C", "E", "F", "UP", "RUF", "I", "PL", "PTH", "TID252", "SIM"]
-ignore = ["E402", "PLR2004", "PLR0913", "RUF001", "E402", "PLR2004", "PLR0913", "RUF001"]
-fixable = ["C", "E", "F", "UP", "I", "PL", "RUF", "PTH", "PLC", "TID252", "SIM", "C", "E", "F", "UP", "I", "PL", "RUF", "PTH", "PLC", "TID252", "SIM"]
+select = ["A", "C", "E", "F", "UP", "RUF", "I", "PL", "PTH", "TID252", "SIM"]
+ignore = ["E402", "PLR2004", "PLR0913", "RUF001"]
+fixable = ["C", "E", "F", "UP", "I", "PL", "RUF", "PTH", "PLC", "TID252", "SIM"]
 dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
 
 [tool.ruff.lint.mccabe]
