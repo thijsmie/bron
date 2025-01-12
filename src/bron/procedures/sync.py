@@ -16,9 +16,9 @@ def sync(project: Path) -> None:
 
     for source in config.sources:
         if source.url:
-            source_doc = loads(resolve_by_url(project, source))
+            source_doc = loads(resolve_by_url(project, source.url))
         elif source.path:
-            source_doc = loads(resolve_by_path(project, source))
+            source_doc = loads(resolve_by_path(project, Path(source.path)))
         else:
             raise ValueError("Source must have either a URL or a path")
 

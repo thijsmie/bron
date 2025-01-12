@@ -13,10 +13,10 @@ def item_is_nosync(item: Item) -> bool:
 @overload
 def _merge_regular(base: Table, update: Table, path: tuple[str, ...]) -> None: ...
 @overload
-def _merge_regular(base: Array, update: Array, path: tuple[str, ...]) -> None: ...
+def _merge_regular(base: Array, update: Array, path: tuple[str, ...]) -> None: ... # type: ignore
 
 
-def _merge_regular(base, update, path):
+def _merge_regular(base: Table | Array, update: Table | Array, path: tuple[str, ...]) -> None:
     if isinstance(base, Table):
         assert isinstance(update, Table)
 
@@ -96,7 +96,7 @@ def _merge_depencency_cases(base: Item, update: Item, path: tuple[str, ...]) -> 
     return False
 
 
-def _merge(base: Item, update: Item, path: tuple[str, ...]) -> bool:
+def _merge(base: Item, update: Item, path: tuple[str, ...]) -> None:
     if _merge_depencency_cases(base, update, path):
         return
     _merge_regular(base, update, path)
