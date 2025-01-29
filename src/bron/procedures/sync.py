@@ -1,28 +1,50 @@
+from collections import deque
 from pathlib import Path
 
-from pytoml11 import Table, dump, load, loads
+from pytoml11 import Table, dumps, load
 
 from bron.config import load_config
 from bron.procedures.merge import merge_pyproject
-from bron.resolvers.path import resolve_by_path
-from bron.resolvers.url import resolve_by_url
+from bron.procedures.resolve import resolve
+from bron.render import Printer
 
 
-def sync(project: Path) -> None:
+def sync(printer: Printer, project: Path, check: bool) -> int:
     doc = load(str(project))
     config = load_config(doc)
 
+    sources = deque(config.sources)
+    in_queue = {source.name for source in sources}
+    docs: list[Table] = []
+
+    while sources:
+        source = sources.popleft()
+        source_doc = resolve(project, source.location)
+
+        for extra_source in load_config(source_doc).sources:
+            if extra_source.name not in in_queue:
+                sources.append(extra_source)
+                in_queue.add(extra_source.name)
+
+        docs.append(source_doc)
+
     update = Table({})
+    for source_doc in docs[::-1]:
+        merge_pyproject(update, source_doc, True)
 
-    for source in config.sources:
-        if source.url:
-            source_doc = loads(resolve_by_url(project, source.url))
-        elif source.path:
-            source_doc = loads(resolve_by_path(project, Path(source.path)))
-        else:
-            raise ValueError("Source must have either a URL or a path")
+    merge_pyproject(doc, update, False)
 
-        merge_pyproject(update, source_doc)
+    new_pyproject = dumps(doc)
+    old_pyproject = project.read_text()
 
-    merge_pyproject(doc, update)
-    dump(doc, str(project))
+    if new_pyproject == old_pyproject:
+        printer.print("[bold blue]⛲ No changes to pyproject.toml")
+        return 0
+
+    if check:
+        printer.print("[bold red]⛲ Would change pyproject.toml")
+        return 1
+
+    project.write_text(new_pyproject)
+    printer.print("[bold blue]⛲ Synced pyproject.toml")
+    return 0

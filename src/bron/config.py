@@ -1,13 +1,16 @@
 from dataclasses import dataclass
+from pathlib import Path
 
+from httpx import URL
 from pytoml11 import Table
+
+from bron.exceptions import BronConfigError
 
 
 @dataclass
 class Source:
     name: str
-    url: str | None
-    path: str | None
+    location: URL | Path
 
 
 @dataclass
@@ -16,16 +19,27 @@ class SyncConfig:
 
 
 def load_config(config: Table) -> SyncConfig:
-    try:
-        sources = []
-        for name, source in config["tool"]["bron"]["source"].value.items():
+    sources: list[Source] = []
+
+    for source in config.get("tool", {}).get("bron", {}).get("sources", Table({})).value.items():
+        if "name" not in source:
+            raise BronConfigError("Source must have a name")
+
+        if "url" in source:
             sources.append(
                 Source(
-                    name=name,
-                    url=source["url"].value if "url" in source else None,
-                    path=source["path"].value if "path" in source else None,
+                    name=source["name"],
+                    location=URL(source["url"].value),
                 )
             )
-        return SyncConfig(sources=sources)
-    except KeyError:
-        return SyncConfig(sources=[])
+        elif "path" in source:
+            sources.append(
+                Source(
+                    name=source["name"],
+                    location=Path(source["path"].value),
+                )
+            )
+        else:
+            raise BronConfigError(f"Source must have either a URL or a path, {source["name"]} does not")
+
+    return SyncConfig(sources=sources)
