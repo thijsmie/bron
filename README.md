@@ -2,6 +2,4 @@
 
 Sync your `pyproject.toml` configuration with sources upstream.
 
-## Commands
-
-### `bron`
+Go to [bron.sh](https://bron.sh) for more info.
