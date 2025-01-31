@@ -27,6 +27,16 @@ def render_help() -> None:
 
     commands.add_row(" [bold]•[/] [cyan]sync[/]", "[italic]Synchronise your pyproject.toml with your bron sources.")
     commands.add_row(" [bold]•[/] [cyan]format[/]", "[italic]Format your pyproject.toml.")
+    commands.add_row(
+        " [bold]•[/] [cyan]bootstrap[/] <source>", "[italic]Bootstrap your bron configuration with predefined sources."
+    )
+    commands.add_row(
+        " [bold]•[/] [cyan]purge[/]",
+        "[italic]Purge bron from your pyproject.toml including all matching upstream configuration.",
+    )
+    commands.add_row(" [bold]•[/] [cyan]add[/] <name> <source>", "[italic]Add a new source to your bron configuration.")
+    commands.add_row(" [bold]•[/] [cyan]remove[/] <name>", "[italic]Remove a source from your bron configuration.")
+    commands.add_row(" [bold]•[/] [cyan]list[/]", "[italic]List all sources in your bron configuration.")
 
     flags = Table(
         "[bold green]Flags:",
@@ -38,17 +48,27 @@ def render_help() -> None:
 
     flags.add_row(
         " [bold]•[/] [yellow]--check",
-        "[italic] Run sync/format in check mode, e.g. yield exit code 1 if changes would be made.",
+        "[italic] (only for format/sync) Run in check mode, e.g. yield exit code 1 if changes would be made.",
+    )
+    flags.add_row(
+        " [bold]•[/] [yellow]--quiet",
+        "[italic] Suppress all output.",
     )
     flags.add_row(
         " [bold]•[/] [yellow]--help",
         "[italic] Print this help and exit.",
     )
+    flags.add_row(
+        " [bold]•[/] [yellow]--bron-only",
+        "[italic] (only for bootstrapping) Only merge the bron section of the bootstrap source.",
+    )
+    flags.add_row(
+        " [bold]•[/] [yellow]--no-sync",
+        "[italic] (only for bootstrapping) Do not sync after bootstrapping.",
+    )
 
     help_data = Group(
         Markdown("*Sync your `pyproject.toml` with upstream sources*"),
-        "",
-        "[bold green]Usage:[/][cyan] bron sync/format [/][yellow]\\[--check]",
         "",
         commands,
         "",

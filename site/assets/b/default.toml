@@ -1,0 +1,17 @@
+[tool.bron.sources.fonk]
+path = "../c/fonk/default.toml"
+
+[tool.bron.sources.uv]
+path = "../c/uv/locktask.toml"
+
+[tool.bron.sources.bron]
+path = "../c/bron/default.toml"
+
+[tool.bron.sources.ruff]
+path = "../c/ruff/default.toml"
+
+[tool.bron.sources.mypy]
+path = "../c/mypy/default.toml"
+
+[tool.bron.sources.pytest]
+path = "../c/pytest/default.toml"

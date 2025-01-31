@@ -1,0 +1,55 @@
+[dependency-groups]
+dev = [
+  "ruff"
+]
+
+[tool.ruff]
+line-length = 120
+target-version = "py313"
+
+[tool.ruff.lint]
+select =  ["F", "E", "W", "C", "I", "UP", "ASYNC", "S", "A", "DTZ", "G201", "G202", "PIE", "T20", "PT", "RET", "SIM", "TID252", "PTH", "ERA", "PL", "RUF"]
+fixable = ["F", "E", "W", "C", "I", "UP", "ASYNC", "PIE", "PT", "RET", "SIM", "TID252", "PTH", "PL", "RUF"]
+ignore = ["E402", "PLR2004", "PLR0913", "S101", "PT001"]
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+[tool.ruff.lint.isort]
+combine-as-imports = true 
+force-wrap-aliases = true
+
+[tool.ruff.lint.mccabe]
+max-complexity = 10
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*.py" = ["S"]
+"test_*.py" = ["S"]
+"tests_*.py" = ["S"]
+"conftest.py" = ["S"]
+
+[tool.fonk.alias.all]
+commands = ["ruff-format", "ruff-check"]
+
+[tool.fonk.alias.format]
+description = "Check and/or fix code formatting/styling"
+commands = ["ruff-format", "ruff-check"]
+flags = ["fix"]
+
+[tool.fonk.command.ruff-check]
+type = "uvx"
+description = "Check and/or fix the code style"
+arguments = ["ruff", "check", "src"]
+flags = [
+    {on = "verbose", add = "--verbose"},
+    {on = "quiet", add = "--quiet"},
+    {on = "fix", add = "--fix"},
+]
+
+[tool.fonk.command.ruff-format]
+type = "uvx"
+description = "Check and/or fix code formatting"
+arguments = ["ruff", "format", "--check", "src"]
+flags = [
+    {on = "verbose", add = "--verbose"},
+    {on = "quiet", add = "--quiet"},
+    {on = "fix", remove = "--check"},
+]

@@ -1,0 +1,33 @@
+[dependency-groups]
+dev = [
+  "mypy"
+]
+
+[tool.mypy]
+python_version = "3.13"
+warn_unused_configs = true
+warn_unused_ignores = true
+show_error_codes = true
+check_untyped_defs = true
+show_column_numbers = true
+no_implicit_optional = true
+ignore_missing_imports = true
+disallow_incomplete_defs = true
+disallow_untyped_defs = true
+disallow_untyped_calls = true
+
+[tool.fonk.alias.all]
+commands = ["mypy"]
+
+[tool.fonk.alias.typecheck]
+description = "Run the type checker"
+commands = ["mypy"]
+
+[tool.fonk.command.mypy]
+type = "uv"
+description = "Perform static type checking"
+arguments = ["mypy", "src"]
+flags = [
+    {on = "verbose", add = "--verbose"},
+    {on = "quiet", add = "--no-error-summary"}
+]

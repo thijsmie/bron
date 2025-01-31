@@ -1,0 +1,43 @@
+[dependency-groups]
+dev = [
+  "pytest",
+  "pytest-cov",
+  "pytest-asyncio"
+]
+
+[tool.coverage.run]
+relative_files = true
+
+[tool.coverage.report]
+exclude_also = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+    "from structlog.alliander_types import LogFieldsDict",
+    "@(abc\\.)?abstractmethod",
+]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+
+[tool.fonk.alias.all]
+commands = ["pytest"]
+
+[tool.fonk.alias.test]
+description = "Run the test suite"
+commands = ["pytest"]
+
+[tool.fonk.command.pytest]
+type = "uv"
+description = "Run the test suite with pytest"
+arguments = ["pytest", "tests", "--verbose"]
+flags = [
+    {on = "verbose", add = "-vvv", remove = "--verbose"},
+    {on = "quiet", add = ["-q", "--no-summary"], remove = "--verbose"},
+    {on = "fail-quick", add = "-x"},
+    {on = "debug", add = "--pdb"}
+]

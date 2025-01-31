@@ -1,0 +1,10 @@
+{{ $resource := resources.Get (.Get 0) }}
+{{ if $resource }}
+{{ $content := $resource.Content }}
+{{ if $content }}
+{{ transform.Highlight $content "toml" }}
+{{ end }}
+<a href="{{ $resource.RelPermalink }}" download>Download {{ .Get 0 }}</a>
+{{ else }}
+  <p>File not found: {{ .Get 0 }}</p>
+{{ end }}

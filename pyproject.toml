@@ -1,43 +1,150 @@
 [project]
 name = "bron"
-version = "0.1.0"
+version = "0.2.0"
 description = "Operational TOML"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
     "httpx>=0.28.1",
     "packaging>=24.2",
-    "pytoml11>=0.0.4",
+    "pytoml11>=0.0.5",
     "rich>=13.9.4",
 ]
 
 [project.scripts]
 bron = "bron:app"
 
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
 [tool.uv]
 package = true
 
-[tool.bron.source.ruff]
-path = "./configs/tool.ruff.toml"
+[tool.bron.sources.fonk]
+url = "http://localhost:1313/c/fonk/default.toml"
 
-[tool.bron.source.mypy]
-path = "./configs/tool.mypy.toml"
+[tool.bron.sources.uv]
+url = "http://localhost:1313/c/uv/locktask.toml"
 
-[tool.ruff]
-line-length = 120
-target-version = "py312"
+[tool.bron.sources.bron]
+path = "configs/localbron.toml"
 
-[tool.ruff.lint]
-select = ["A", "C", "E", "F", "UP", "RUF", "I", "PL", "PTH", "TID252", "SIM"]
-ignore = ["E402", "PLR2004", "PLR0913", "RUF001"]
-fixable = ["C", "E", "F", "UP", "I", "PL", "RUF", "PTH", "PLC", "TID252", "SIM"]
-dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+[tool.bron.sources.ruff]
+url = "http://localhost:1313/c/ruff/default.toml"
 
-[tool.ruff.lint.mccabe]
-max-complexity = 10
+[tool.bron.sources.mypy]
+url = "http://localhost:1313/c/mypy/default.toml"
+
+[tool.bron.sources.pytest]
+url = "http://localhost:1313/c/pytest/default.toml"
+
+[tool.coverage.run]
+relative_files = true
+
+[tool.coverage.report]
+exclude_also = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+    "from structlog.alliander_types import LogFieldsDict",
+    "@(abc\\.)?abstractmethod",
+]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+
+[tool.fonk]
+flags = [
+    {name = "fix", description = "Autofix issues where possible"},
+    {name = "debug", description = "Enable debugging"},
+]
+
+[tool.fonk.alias.all]
+commands = ["uv-lock", "bron", "ruff-format", "ruff-check", "mypy", "pytest"]
+description = "Run all checks"
+
+[tool.fonk.alias.test]
+description = "Run the test suite"
+commands = ["pytest"]
+
+[tool.fonk.alias.typecheck]
+description = "Run the type checker"
+commands = ["mypy"]
+
+[tool.fonk.alias.format]
+description = "Check and/or fix code formatting/styling"
+commands = ["ruff-format", "ruff-check"]
+flags = ["fix"]
+
+[tool.fonk.command.pytest]
+type = "uv"
+description = "Run the test suite with pytest"
+arguments = ["pytest", "tests", "--verbose"]
+flags = [
+    {on = "verbose", add = "-vvv", remove = "--verbose"},
+    {on = "quiet", add = ["-q", "--no-summary"], remove = "--verbose"},
+    {on = "fail-quick", add = "-x"},
+    {on = "debug", add = "--pdb"},
+]
+
+[tool.fonk.command.mypy]
+type = "uv"
+description = "Perform static type checking"
+arguments = ["mypy", "src"]
+flags = [
+    {on = "verbose", add = "--verbose"},
+    {on = "quiet", add = "--no-error-summary"},
+]
+
+[tool.fonk.command.ruff-check]
+type = "uvx"
+description = "Check and/or fix the code style"
+arguments = ["ruff", "check", "src"]
+flags = [
+    {on = "verbose", add = "--verbose"},
+    {on = "quiet", add = "--quiet"},
+    {on = "fix", add = "--fix"},
+]
+
+[tool.fonk.command.ruff-format]
+type = "uvx"
+description = "Check and/or fix code formatting"
+arguments = ["ruff", "format", "--check", "src"]
+flags = [
+    {on = "verbose", add = "--verbose"},
+    {on = "quiet", add = "--quiet"},
+    {on = "fix", remove = "--check"},
+]
+
+[tool.fonk.command.bron]
+type = "uv"
+arguments = ["bron", "sync", "--check"]
+flags = [
+    {on = "fix", remove = "--check"},
+]
+
+[tool.fonk.command.uv-lock]
+type = "shell"
+description = "Check if the lock file is up to date"
+arguments = ["uv", "lock", "--check"]
+flags = [
+    {on = "verbose", add = "--verbose"},
+    {on = "quiet", add = "--quiet"},
+    {on = "fix", remove = "--check"},
+]
+
+[tool.fonk.default]
+description = "Most commonly used: run all checks in fix mode"
+command = "all"
+flags = ["fix"]
 
 [tool.mypy]
-python_version = "3.10"
+python_version = "3.13"
 warn_unused_configs = true
 warn_unused_ignores = true
 show_error_codes = true
@@ -49,43 +156,35 @@ disallow_incomplete_defs = true
 disallow_untyped_defs = true
 disallow_untyped_calls = true
 
-[tool.fonk]
-default = {command = "all", flags = ["fix"]}
-flags = [
-    {name = "fix", description = "Fix all fixable issues"},
-]
+[tool.ruff]
+line-length = 120
+target-version = "py313"
 
-[tool.fonk.command.ruff-check]
-type = "uv"
-arguments = ["ruff", "check", "src"]
-flags = [
-    {on = "fix", add = "--fix"},
-]
+[tool.ruff.lint]
+select = ["F", "E", "W", "C", "I", "UP", "ASYNC", "S", "A", "DTZ", "G201", "G202", "PIE", "T20", "PT", "RET", "SIM", "TID252", "PTH", "ERA", "PL", "RUF"]
+fixable = ["F", "E", "W", "C", "I", "UP", "ASYNC", "PIE", "PT", "RET", "SIM", "TID252", "PTH", "PL", "RUF"]
+ignore = ["E402", "PLR2004", "PLR0913", "S101", "PT001"]
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
 
-[tool.fonk.command.ruff-format]
-type = "uv"
-arguments = ["ruff", "format", "src", "--check"]
-flags = [
-    {on = "fix", remove = "--check"},
-]
+[tool.ruff.lint.isort]
+combine-as-imports = true
+force-wrap-aliases = true
 
-[tool.fonk.command.mypy]
-type = "uv"
-arguments = ["mypy", "src"]
+[tool.ruff.lint.mccabe]
+max-complexity = 10
 
-[tool.fonk.command.bron]
-type = "uv"
-arguments = ["bron", "sync", "--check"]
-flags = [
-    {on = "fix", remove = "--check"},
-]
-
-[tool.fonk.alias.all]
-commands = ["bron", "ruff-check", "ruff-format", "mypy"]
+[tool.ruff.lint.per-file-ignores]
+"tests/*.py" = ["S"]
+"test_*.py" = ["S"]
+"tests_*.py" = ["S"]
+"conftest.py" = ["S"]
 
 [dependency-groups]
 dev = [
-    "mypy>=1.14.1",
-    "ruff>=0.9.2",
+  "mypy",
+  "pytest",
+  "pytest-asyncio",
+  "pytest-cov",
+  "ruff",
 ]
 

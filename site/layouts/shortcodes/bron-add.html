@@ -1,0 +1,6 @@
+{{ $resource := resources.Get (.Get 1) }}
+{{ if $resource }}
+{{ transform.Highlight (printf "%s %s %s" "uvx bron add" (.Get 0) $resource.Permalink) "bash" }}
+{{ else }}
+  <p>File not found: {{ .Get 0 }}</p>
+{{ end }}

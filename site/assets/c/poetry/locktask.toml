@@ -1,0 +1,12 @@
+[tool.fonk.alias.all]
+commands = ["poetry-lock"]
+
+[tool.fonk.command.poetry-lock]
+type = "shell"
+description = "Check if the lock file is up to date"
+arguments = ["poetry", "check", "--lock"]
+flags = [
+    {on = "verbose", add = "-vv"},
+    {on = "quiet", add = "--quiet"},
+    {on = "fix", remove = ["check", "--lock"], add = "lock"},
+]

@@ -1,0 +1,9 @@
+[tool.fonk.alias.all]
+commands = ["bron"]
+
+[tool.fonk.command.bron]
+type = "uv"
+arguments = ["bron", "sync", "--check"]
+flags = [
+    {on = "fix", remove = "--check"},
+]

@@ -1,38 +1,21 @@
-from collections import deque
 from pathlib import Path
 
-from pytoml11 import Table, dumps, load
+from pytoml11 import dumps, load
 
 from bron.config import load_config
-from bron.procedures.merge import merge_pyproject
-from bron.procedures.resolve import resolve
+from bron.logic.checker import run_document_check
+from bron.logic.merge import MergeOptions, merge_pyproject
+from bron.logic.update import construct_update_document
 from bron.render import Printer
 
 
-def sync(printer: Printer, project: Path, check: bool) -> int:
+def sync_procedure(printer: Printer, project: Path, check: bool) -> int:
     doc = load(str(project))
+    run_document_check(doc)
     config = load_config(doc)
+    update = construct_update_document(printer, project, config)
 
-    sources = deque(config.sources)
-    in_queue = {source.name for source in sources}
-    docs: list[Table] = []
-
-    while sources:
-        source = sources.popleft()
-        source_doc = resolve(project, source.location)
-
-        for extra_source in load_config(source_doc).sources:
-            if extra_source.name not in in_queue:
-                sources.append(extra_source)
-                in_queue.add(extra_source.name)
-
-        docs.append(source_doc)
-
-    update = Table({})
-    for source_doc in docs[::-1]:
-        merge_pyproject(update, source_doc, True)
-
-    merge_pyproject(doc, update, False)
+    merge_pyproject(doc, update, MergeOptions(merge_arrays=False, merge_bron=False))
 
     new_pyproject = dumps(doc)
     old_pyproject = project.read_text()

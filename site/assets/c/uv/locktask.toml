@@ -1,0 +1,12 @@
+[tool.fonk.alias.all]
+commands = ["uv-lock"]
+
+[tool.fonk.command.uv-lock]
+type = "shell"
+description = "Check if the lock file is up to date"
+arguments = ["uv", "lock", "--check"]
+flags = [
+    {on = "verbose", add = "--verbose"},
+    {on = "quiet", add = "--quiet"},
+    {on = "fix", remove = "--check"},
+]

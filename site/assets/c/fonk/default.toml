@@ -1,0 +1,14 @@
+[tool.fonk]
+flags = [
+    {name = "fix", description = "Autofix issues where possible"},
+    {name = "debug", description = "Enable debugging"},
+]
+
+[tool.fonk.default]
+description = "Most commonly used: run all checks in fix mode"
+command = "all"
+flags = ["fix"]
+
+[tool.fonk.alias.all]
+description = "Run all checks"
+commands = []

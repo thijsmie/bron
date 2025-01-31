@@ -15,3 +15,8 @@ wheels/
 
 # Caches
 .*_cache/
+
+# Hugo
+
+site/resources/_gen
+site/public

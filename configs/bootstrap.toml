@@ -1,0 +1,17 @@
+[tool.bron.sources.fonk]
+url = "http://localhost:1313/c/fonk/default.toml"
+
+[tool.bron.sources.uv]
+url = "http://localhost:1313/c/uv/locktask.toml"
+
+[tool.bron.sources.bron]
+path = "./localbron.toml"
+
+[tool.bron.sources.ruff]
+url = "http://localhost:1313/c/ruff/default.toml"
+
+[tool.bron.sources.mypy]
+url = "http://localhost:1313/c/mypy/default.toml"
+
+[tool.bron.sources.pytest]
+url = "http://localhost:1313/c/pytest/default.toml"
