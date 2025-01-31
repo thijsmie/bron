@@ -22,22 +22,22 @@ build-backend = "hatchling.build"
 package = true
 
 [tool.bron.sources.fonk]
-url = "http://localhost:1313/c/fonk/default.toml"
+url = "https://bron.sh/c/fonk/default.toml"
 
 [tool.bron.sources.uv]
-url = "http://localhost:1313/c/uv/locktask.toml"
+url = "https://bron.sh/c/uv/locktask.toml"
 
 [tool.bron.sources.bron]
 path = "configs/localbron.toml"
 
 [tool.bron.sources.ruff]
-url = "http://localhost:1313/c/ruff/default.toml"
+url = "https://bron.sh/c/ruff/default.toml"
 
 [tool.bron.sources.mypy]
-url = "http://localhost:1313/c/mypy/default.toml"
+url = "https://bron.sh/c/mypy/default.toml"
 
 [tool.bron.sources.pytest]
-url = "http://localhost:1313/c/pytest/default.toml"
+url = "https://bron.sh/c/pytest/default.toml"
 
 [tool.coverage.run]
 relative_files = true
